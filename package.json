@@ -1,0 +1,27 @@
+{
+  "name": "ssh-web-terminal",
+  "version": "1.0.0",
+  "description": "Web-based SSH terminal using xterm.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "@dr.pogodin/csurf": "^1.16.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.1",
+    "express-session": "^1.18.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7",
+    "ssh2": "^1.16.0"
+  },
+  "overrides": {
+    "@npmcli/move-file": "@npmcli/fs",
+    "node-gyp": "11.2.0"
+  }
+}
