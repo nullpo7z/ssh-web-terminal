@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH Terminal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- xterm.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+    <!-- Styles to enable scrolling with mouse wheel -->
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --tab-bg: #f5f5f5;
+            --terminal-bg: #000000;
+            --input-bg: #ffffff;
+        }
+        
+        body.dark-mode {
+            --bg-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #444444;
+            --tab-bg: #252525;
+            --terminal-bg: #000000;
+            --input-bg: #2d2d2d;
+        }
+        
+        body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--tab-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .terminal-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 60px);
+            margin-top: 60px; /* Add margin for header height */
+        }
+        
+        #terminal {
+            flex: 1;
+            background-color: var(--terminal-bg);
+            overflow: auto;
+        }
+        
+        .xterm-viewport {
+            overflow-y: auto !important;
+        }
+        
+        #status-message {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        #status-message.visible {
+            display: block;
+        }
+        
+        /* Passphrase input form styles - optimized */
+        .passphrase-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+        
+        .passphrase-container.visible {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+        
+        .passphrase-form {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            padding: 25px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .passphrase-container:not(.visible) .passphrase-form {
+            transform: translateY(-20px);
+        }
+        
+        .passphrase-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .form-buttons button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        #submit-passphrase-button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+        }
+        
+        #submit-passphrase-button:hover {
+            background-color: #3a80d2;
+        }
+        
+        #cancel-passphrase-button {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        #cancel-passphrase-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-header">
+        <h2>Terminal - <span id="server-name"></span></h2>
+        <div>
+            <button id="disconnect-button">Disconnect</button>
+        </div>
+    </div>
+    
+    <!-- Passphrase input form -->
+    <div id="passphrase-container" class="passphrase-container">
+        <div class="passphrase-form">
+            <h3>Private key passphrase required</h3>
+            <div class="form-group">
+                <label for="key-passphrase">Passphrase:</label>
+                <input type="password" id="key-passphrase" name="key-passphrase">
+            </div>
+            <div class="form-buttons">
+                <button id="submit-passphrase-button">Connect</button>
+                <button id="cancel-passphrase-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="terminal-container">
+        <div id="terminal"></div>
+    </div>
+    
+    <div id="status-message"></div>
+    
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- xterm.js -->
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <!-- xterm.js FitAddon -->
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.7.0/lib/xterm-addon-fit.min.js"></script>
+    <!-- Terminal JS -->
+    <script src="terminal.js"></script>
+</body>
+</html>

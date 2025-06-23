@@ -1,0 +1,417 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* ライトモード（デフォルト）の変数 */
+    --bg-color: #f4f4f4;
+    --container-bg: #fff;
+    --text-color: #333;
+    --heading-color: #2c3e50;
+    --subheading-color: #3498db;
+    --border-color: #ddd;
+    --input-bg: #fff;
+    --button-primary: #3498db;
+    --button-primary-hover: #2980b9;
+    --button-secondary: #6c757d;
+    --button-secondary-hover: #5a6268;
+    --button-delete: #e74c3c;
+    --button-delete-hover: #c0392b;
+    --tab-bg: #f8f9fa;
+    --tab-active-bg: #3498db;
+    --tab-active-color: white;
+    --server-item-hover: #f8f9fa;
+    --form-hint-color: #666;
+    --status-info-bg: #d1ecf1;
+    --status-info-color: #0c5460;
+    --status-success-bg: #d4edda;
+    --status-success-color: #155724;
+    --status-error-bg: #f8d7da;
+    --status-error-color: #721c24;
+    --terminal-bg: #000;
+    --terminal-color: #fff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode {
+    /* ダークモードの変数 */
+    --bg-color: #1a1a1a;
+    --container-bg: #2c2c2c;
+    --text-color: #e0e0e0;
+    --heading-color: #e0e0e0;
+    --subheading-color: #4dabf7;
+    --border-color: #444;
+    --input-bg: #3c3c3c;
+    --button-primary: #4dabf7;
+    --button-primary-hover: #339af0;
+    --button-secondary: #6c757d;
+    --button-secondary-hover: #5a6268;
+    --button-delete: #e74c3c;
+    --button-delete-hover: #c0392b;
+    --tab-bg: #3c3c3c;
+    --tab-active-bg: #4dabf7;
+    --tab-active-color: #fff;
+    --server-item-hover: #3c3c3c;
+    --form-hint-color: #aaa;
+    --status-info-bg: #2a4d58;
+    --status-info-color: #9ad5de;
+    --status-success-bg: #285b38;
+    --status-success-color: #9ad5a7;
+    --status-error-bg: #5b2a33;
+    --status-error-color: #e6a5ad;
+    --terminal-bg: #000;
+    --terminal-color: #fff;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: var(--container-bg);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px var(--shadow-color);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--heading-color);
+    transition: color 0.3s;
+}
+
+h2 {
+    margin-bottom: 15px;
+    color: var(--subheading-color);
+    transition: color 0.3s;
+}
+
+/* Header with user info */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s;
+}
+
+.header h1 {
+    margin-bottom: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+    color: var(--form-hint-color);
+    transition: color 0.3s;
+}
+
+/* Login Form */
+.login-form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--container-bg);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.login-info {
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--form-hint-color);
+    text-align: center;
+    font-style: italic;
+    transition: color 0.3s;
+}
+
+/* パスワード変更フォーム */
+#change-password-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--container-bg);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--form-hint-color);
+    transition: color 0.3s;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s;
+}
+
+.tab-button {
+    background-color: var(--tab-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    padding: 10px 20px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    margin-right: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: var(--server-item-hover);
+}
+
+.tab-button.active {
+    background-color: var(--tab-active-bg);
+    color: var(--tab-active-color);
+    border-color: var(--tab-active-bg);
+}
+
+.tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Server List */
+.server-list {
+    margin-bottom: 20px;
+}
+
+.server-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.server-item:hover {
+    background-color: var(--server-item-hover);
+}
+
+.server-info {
+    flex: 1;
+}
+
+.server-name {
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--heading-color);
+    margin-bottom: 5px;
+    transition: color 0.3s;
+}
+
+.server-details {
+    color: var(--form-hint-color);
+    margin-bottom: 15px;
+    transition: color 0.3s;
+}
+
+.server-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+textarea {
+    resize: vertical;
+    font-family: monospace;
+}
+
+/* Buttons */
+button {
+    background-color: var(--button-primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--button-primary-hover);
+}
+
+.secondary-button {
+    background-color: var(--button-secondary);
+}
+
+.secondary-button:hover {
+    background-color: var(--button-secondary-hover);
+}
+
+.delete-button {
+    background-color: var(--button-delete);
+}
+
+.delete-button:hover {
+    background-color: var(--button-delete-hover);
+}
+
+#disconnect-button {
+    background-color: var(--button-delete);
+}
+
+#disconnect-button:hover {
+    background-color: var(--button-delete-hover);
+}
+
+#logout-button, #change-password-button, #dark-mode-toggle {
+    background-color: var(--button-secondary);
+    font-size: 14px;
+    padding: 6px 12px;
+    margin-left: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Terminal */
+#terminal-container {
+    margin-top: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+}
+
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--tab-bg);
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#terminal {
+    height: 400px;
+    background-color: var(--terminal-bg);
+    padding: 10px;
+}
+
+/* Error Messages */
+.error-message {
+    color: var(--status-error-color);
+    background-color: var(--status-error-bg);
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+    text-align: center;
+    border: 1px solid var(--status-error-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Status Messages */
+#status-message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.error {
+    background-color: var(--status-error-bg);
+    color: var(--status-error-color);
+    border: 1px solid var(--status-error-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.success {
+    background-color: var(--status-success-bg);
+    color: var(--status-success-color);
+    border: 1px solid var(--status-success-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.info {
+    background-color: var(--status-info-bg);
+    color: var(--status-info-color);
+    border: 1px solid var(--status-info-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* No servers message */
+#no-servers-message {
+    text-align: center;
+    color: var(--form-hint-color);
+    padding: 20px;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+/* ダークモードトグルボタン */
+#dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+#dark-mode-toggle .icon {
+    font-size: 14px;
+}

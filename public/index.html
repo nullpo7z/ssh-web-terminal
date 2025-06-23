@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH Web Terminal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- xterm.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+    <!-- マウスホイールでスクロールできるようにするためのスタイル -->
+    <style>
+        #terminal {
+            overflow: auto;
+        }
+        .xterm-viewport {
+            overflow-y: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- ログインコンテナ -->
+    <div id="login-container" class="container">
+        <h1>SSH Web Terminal</h1>
+        <div class="login-form-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div id="login-error" class="error-message hidden">Failed to login. Please try again.</div>
+                
+                <button type="submit" id="login-button">Login</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- アプリケーションコンテナ -->
+    <div id="app-container" class="container hidden">
+        <div class="header">
+            <h1>SSH Web Terminal</h1>
+            <div class="user-info">
+                <span>Logged in as: <span id="username-display"></span></span>
+                <button id="dark-mode-toggle" class="secondary-button">
+                    <span class="icon">🌙</span>
+                    <span class="text">Dark Mode</span>
+                </button>
+                <button id="change-password-button" class="secondary-button">Change Password</button>
+                <button id="logout-button" class="secondary-button">Logout</button>
+            </div>
+        </div>
+        
+        <!-- パスワード変更フォーム -->
+        <div id="change-password-container" class="hidden">
+            <h2>Change Password</h2>
+            <form id="change-password-form">
+                <div class="form-group">
+                    <label for="current-password">Current Password:</label>
+                    <input type="password" id="current-password" name="current-password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" name="new-password" required minlength="8">
+                    <small class="form-hint">Password must be at least 8 characters long</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" id="save-password-button">Save Password</button>
+                    <button type="button" id="cancel-password-button" class="secondary-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="servers-tab">Servers</button>
+            <button class="tab-button" data-tab="add-server-tab">Add Server</button>
+        </div>
+        
+        <div id="servers-tab" class="tab-content active">
+            <h2>Saved Servers</h2>
+            <div id="server-list" class="server-list">
+                <p id="no-servers-message">No servers saved yet. Add a server to get started.</p>
+                <!-- Server list will be populated here -->
+            </div>
+        </div>
+        
+        <div id="add-server-tab" class="tab-content">
+            <h2>Add New Server</h2>
+            <form id="add-server-form">
+                <div class="form-group">
+                    <label for="server-name">Server Name:</label>
+                    <input type="text" id="server-name" name="server-name" placeholder="My Server" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="server-host">Server IP Address:</label>
+                    <input type="text" id="server-host" name="server-host" placeholder="192.168.1.100" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="server-username">Username:</label>
+                    <input type="text" id="server-username" name="server-username" placeholder="admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="server-private-key">Private Key (SSH Key):</label>
+                    <textarea id="server-private-key" name="server-private-key" rows="5" placeholder="-----BEGIN OPENSSH PRIVATE KEY-----..." required></textarea>
+                </div>
+                
+                <button type="submit" id="add-server-button">Add Server</button>
+            </form>
+        </div>
+        
+        <div id="connection-form" class="hidden">
+            <h2>Connect to <span id="server-name-display"></span></h2>
+            <div class="server-details">
+                <p><strong>Host:</strong> <span id="server-host-display"></span></p>
+                <p><strong>Username:</strong> <span id="server-username-display"></span></p>
+            </div>
+            <button id="connect-button">Connect</button>
+            <button id="back-button" class="secondary-button">Back to Server List</button>
+        </div>
+        
+        <div id="terminal-container" class="hidden">
+            <div class="terminal-header">
+                <h2>Terminal - <span id="terminal-server-name"></span></h2>
+                <button id="disconnect-button">Disconnect</button>
+            </div>
+            <div id="terminal"></div>
+        </div>
+        
+        <div id="status-message"></div>
+    </div>
+    
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- xterm.js -->
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <!-- xterm.js FitAddon -->
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.7.0/lib/xterm-addon-fit.min.js"></script>
+    <!-- Client JS -->
+    <script src="client.js"></script>
+</body>
+</html>
